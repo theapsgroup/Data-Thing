@@ -1,0 +1,112 @@
+html, body {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    position: relative;
+    overflow: hidden;
+    font-family: verdana;
+    font-size: 12px;
+}
+body, textarea, a {
+    background-color: #222222;
+    color: #DDD;
+    border: none;
+}
+p {
+    margin: 0;
+}
+.editors {
+    position: absolute;
+    padding: 8px;
+    top: 48px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.head {
+    position: absolute;
+    padding: 8px;
+    height: 48px;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+.head .box {
+    width: 100%;
+}
+.head a {
+    float: right;
+}
+.tree {
+    white-space: pre;
+    font-family: monospace;
+}
+.tree.hover {
+    border: 3px dashed #333333;
+}
+.box {
+    overflow: auto;
+    padding: 8px;
+    float: left;
+    border: 1px solid #333333;
+    box-sizing: border-box;
+}
+.box textarea {
+    width: 100%;
+    height: 99%;
+    box-sizing: border-box;
+}
+.editors .box {
+    width: 33.3%;
+    height: 100%;
+}
+.err {
+    display: none;
+    color: crimson;
+}
+.err.visible {
+    display: inline;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-width: 1024px) {
+  .box::-webkit-scrollbar-button,
+  .ace_scrollbar::-webkit-scrollbar-button {
+    width: 2px;
+    height: 2px;
+  }
+  .box::-webkit-scrollbar,
+  .ace_scrollbar::-webkit-scrollbar {
+    background: none;
+    width: 8px;
+    height: 8px;
+  }
+  .box::-webkit-scrollbar-thumb,
+  .ace_scrollbar::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 8px;
+    border: 1px solid #AAA;
+  }
+  .box::-webkit-scrollbar-thumb:horizontal,
+  .ace_scrollbar::-webkit-scrollbar-thumb:horizontal {
+    background: -moz-linear-gradient(top, #cccccc 0%, #bbbbbb 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #cccccc), color-stop(100%, #bbbbbb));
+    background: -webkit-linear-gradient(top, #cccccc 0%, #bbbbbb 100%);
+    background: -o-linear-gradient(top, #cccccc 0%, #bbbbbb 100%);
+    background: -ms-linear-gradient(top, #cccccc 0%, #bbbbbb 100%);
+    background: linear-gradient(to bottom, #cccccc 0%, #bbbbbb 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFCCCCCC', endColorstr='#FFBBBBBB',GradientType=0 );
+  }
+  .box::-webkit-scrollbar-thumb:vertical,
+  .ace_scrollbar::-webkit-scrollbar-thumb:vertical {
+    background: -moz-linear-gradient(left, #cccccc 0%, #bbbbbb 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, #cccccc), color-stop(100%, #bbbbbb));
+    background: -webkit-linear-gradient(left, #cccccc 0%, #bbbbbb 100%);
+    background: -o-linear-gradient(left, #cccccc 0%, #bbbbbb 100%);
+    background: -ms-linear-gradient(left, #cccccc 0%, #bbbbbb 100%);
+    background: linear-gradient(to right, #cccccc 0%, #bbbbbb 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFCCCCCC', endColorstr='#FFBBBBBB',GradientType=1 );
+  }
+  .box::-webkit-scrollbar-corner,
+  .ace_scrollbar::-webkit-scrollbar-corner {
+    background: none;
+  }
+}

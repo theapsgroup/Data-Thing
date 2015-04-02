@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data thing</title>
+    <script src="components/q/q.js"></script>
+    <script src="components/ace/src-min/ace.js"></script>
+    <script src="components/ace/src-min/mode-javascript.js"></script>
+    <script src="components/ace/src-min/theme-monokai.js"></script>
+    <script src="js/TreeLib.js"></script>
+
+    <link rel="stylesheet" href="css/tree.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="head">
+        <div class="box">
+            <p>
+                File: <input type="file" id="input">
+                <span class="err" id="error"></span>
+                <a id="raw" download="raw.json" href="" target="raw">raw JSON output</a>
+            </p>
+        </div>
+    </div>
+    <div class="editors">
+        <div class="box tree" id="inputTree"></div>
+        <div class="box" id="scriptBox">
+            <!-- <textarea name="" id="script">return input;</textarea> -->
+        </div>
+        <div class="box tree" id="outputTree"></div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

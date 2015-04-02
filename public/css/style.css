@@ -37,13 +37,6 @@ p {
 .head a {
     float: right;
 }
-.tree {
-    white-space: pre;
-    font-family: monospace;
-}
-.tree.hover {
-    border: 3px dashed #333333;
-}
 .box {
     overflow: auto;
     padding: 8px;

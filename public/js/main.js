@@ -13,7 +13,7 @@ function createEditor(el,readonly) {
     return editor
 }
 
-function readSingleFile(evt) {
+function readInputFile(evt) {
     //Retrieve the first (and only!) File from the FileList object
     var f = evt.target.files[0];
 
@@ -26,8 +26,25 @@ function readSingleFile(evt) {
     }
 }
 
+function readScriptFile(evt) {
+    var f = evt.target.files[0];
+
+    if (f) {
+        readFile(f)
+            .then(function(src) {
+                console.log(src);
+                scriptEditor.setValue(src);
+                scriptEditor.clearSelection();
+            })
+            .then(process)
+            .done();
+    } else {
+        alert("Failed to load file");
+    }
+}
+
 function focus() {
-    document.getElementById('script').focus();
+    // document.getElementById('script').focus();
 }
 
 //enable dropping of files
@@ -96,6 +113,12 @@ function process() {
     return Q.when(function() {
         var script = scriptEditor.getValue();
         localStorage.inputScript = script;
+        var dataurl = [
+            'data:',
+            'text/js;charset=utf-8,',
+            encodeURI(script)
+        ].join('');
+        document.getElementById('rawScript').href = dataurl;
         return new Function('input',script);
     }).then(function(factory) {
         return factory();
@@ -114,7 +137,7 @@ function process() {
             'application/json;charset=utf-8,',
             JSON.stringify(json)
         ].join('');
-        document.getElementById('raw').href = dataurl;
+        document.getElementById('rawOutput').href = dataurl;
         return json;
     }).then(renderJSON(outputEditor))
     .fail(function(err) {
@@ -160,7 +183,8 @@ function throttle(func, wait, options) {
     };
   };
 
-document.getElementById('input').addEventListener('change', readSingleFile, false);
+document.getElementById('inputFile').addEventListener('change', readInputFile, false);
+document.getElementById('scriptFile').addEventListener('change', readScriptFile, false);
 scriptEditor.on('change',throttle(process));
 
 if (localStorage.inputScript) {

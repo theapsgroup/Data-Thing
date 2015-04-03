@@ -10,21 +10,35 @@
     <script src="js/TreeLib.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div class="head">
-        <div class="box">
-            <p>
-                File: <input type="file" id="input">
-                <span class="err" id="error"></span>
-                <a id="raw" download="raw.json" href="" target="raw">raw JSON output</a>
-            </p>
+    <div class="box">
+        <div class="head">
+            <input type="file" id="inputFile" style="display:none">
+            <i class="pull-left fa fa-folder-open-o" onclick="document.getElementById('inputFile').click();"></i>
+            Data Thing
         </div>
+        <div class="body" id="inputTree"></div>
     </div>
-    <div class="editors">
-        <div class="box" id="inputTree"></div>
-        <div class="box" id="scriptBox"></div>
-        <div class="box" id="outputTree"></div>
+    <div class="box">
+        <div class="head">
+            <input type="file" id="scriptFile" style="display:none">
+            <i class="pull-left fa fa-folder-open-o" onclick="document.getElementById('scriptFile').click();"></i>
+            <span class="err" id="error"></span>
+            <a class="pull-right" id="rawScript" download="script.js" href="" target="raw">
+                <i class="fa fa-floppy-o"></i>
+            </a>
+        </div>
+        <div class="body" id="scriptBox"></div>
+    </div>
+    <div class="box">
+        <div class="head">
+            <a class="pull-right" id="rawOutput" download="raw.json" href="" target="raw">
+                <i class="fa fa-floppy-o"></i>
+            </a>
+        </div>
+        <div class="body" id="outputTree"></div>
     </div>
 
     <script src="js/main.js"></script>

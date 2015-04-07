@@ -125,12 +125,13 @@ function process() {
     }).fail(function(e) {
         err.innerHTML = 'error in script: '+e.message;
         err.classList.add('visible');
-        return function(input){return input;}
+        return function(input){return e.message;}
     }).then(function(fn) {
         return fn(input);
     }).fail(function(e) {
         err.innerHTML = 'error executing script: '+e.message;
         err.classList.add('visible');
+        return e.message;
     }).then(function(json) {
         var dataurl = [
             'data:',

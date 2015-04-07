@@ -7,12 +7,7 @@ var output = {};
 
 app.use(express.static(path.resolve(__dirname, 'public')));
 
-app.get('/input',function(req,res) {
-    res.json(input);
-});
+var port = 7777;
 
-app.get('/output',function(req,res) {
-    res.json(output);
-});
-
-app.listen(7777);
+app.listen(port);
+console.log('Data Thing running on port',port);

@@ -1,6 +1,8 @@
 Data Thing, by The APS Group
 ==========
 
+Available, for your convenience, at <http://theapsgroup.github.io/Data-Thing/>
+
 General purpose json fiddle tool. I found myself writing many small nodejs scripts just to transform data in another format. The overhead of reading and saving files is removed, furthermore a real-time feedback mechanism (better than console and nodemon) is added.
 
 1. Load a json file by opening or dragging in.

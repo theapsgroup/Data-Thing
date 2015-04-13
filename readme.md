@@ -9,3 +9,35 @@ General purpose json fiddle tool. I found myself writing many small nodejs scrip
 2. Create a script by opening or creating from scratch. `Q` and `TreeLib` are available as globals, more (or a more generic way to inject dependencies) may follow.
 3. Use the "magic" variable `input` and return a new output. Most simple script is `return input`
 4. Save the result.
+
+Example
+---------
+
+Suppose you have the following JSON (randomly generated data): <http://beta.json-generator.com/PSKfAr_>
+
+To simply return the email of the first record, type
+
+    return input[0].email;
+
+To get the names of blue-eyed records:
+
+    return input.filter(function(r) {
+        return r.eyeColor==='blue';
+    }).map(function(r) {
+        return {
+            eyeColor: r.eyeColor,
+            name: r.name
+        }
+    });
+
+Or to create groups by eye color:
+
+    return input.reduce(function(groups,r) {
+        if (!groups[r.eyeColor]) {
+            groups[r.eyeColor] = [];
+        }
+        groups[r.eyeColor].push({
+            name: r.name
+        });
+        return groups;
+    },{});

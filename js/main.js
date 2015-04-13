@@ -1,6 +1,6 @@
 var input;
 
-var inputEditor = createEditor('inputTree',true);
+var inputEditor = createEditor('inputTree');
 var scriptEditor = createEditor('scriptBox');
 var outputEditor = createEditor('outputTree',true);
 
@@ -98,6 +98,14 @@ function parseJSON() {
     }
 }
 
+function render(editor) {
+    return function(src) {
+        editor.setValue(src);
+        editor.clearSelection();
+        return src;
+    }
+}
+
 function renderJSON(editor) {
     return function(json) {
         var src = (JSON.stringify(json,null,2)||'undefined');
@@ -187,6 +195,22 @@ function throttle(func, wait, options) {
 document.getElementById('inputFile').addEventListener('change', readInputFile, false);
 document.getElementById('scriptFile').addEventListener('change', readScriptFile, false);
 scriptEditor.on('change',throttle(process));
+inputEditor.on('change',throttle(function() {
+    Q.when(inputEditor.getValue())
+        .then(function(str) {
+            localStorage.inputJSON = str;
+            return str;
+        })
+        .then(parseJSON())
+        .then(function(json) {
+            input = json;
+            return json;
+        })
+        .then(process)
+
+    // console.log('change');
+    // showInput(inputEditor.getValue());
+}));
 
 if (localStorage.inputScript) {
     scriptEditor.setValue(localStorage.inputScript);

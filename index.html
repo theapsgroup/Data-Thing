@@ -6,6 +6,7 @@
     <script src="components/q/q.js"></script>
     <script src="components/ace/src-min/ace.js"></script>
     <script src="components/ace/src-min/mode-javascript.js"></script>
+    <script src="components/ace/src-min/mode-plain_text.js"></script>
     <script src="components/ace/src-min/theme-monokai.js"></script>
     <script src="js/TreeLib.js"></script>
 
@@ -18,6 +19,13 @@
             <input type="file" id="inputFile" style="display:none">
             <i class="pull-left fa fa-folder-open-o" onclick="document.getElementById('inputFile').click();"></i>
             Data Thing
+            <span class="pull-right">
+                <label for="inputMode">Mode:</label>
+                <select name="" id="inputMode">
+                    <option value="json">JSON</option>
+                    <option value="text">Text</option>
+                </select>
+            </span>
         </div>
         <div class="body" id="inputTree"></div>
     </div>
@@ -34,9 +42,16 @@
     </div>
     <div class="box">
         <div class="head">
-            <a class="pull-right" id="rawOutput" download="raw.json" href="" target="raw">
-                <i class="fa fa-floppy-o"></i>
-            </a>
+            <span class="pull-right">
+                <label for="outputMode">Mode:</label>
+                <select name="" id="outputMode">
+                    <option value="json">JSON</option>
+                    <option value="text">Text</option>
+                </select>
+                <a id="rawOutput" download="raw.json" href="" target="raw">
+                    <i class="fa fa-floppy-o"></i>
+                </a>
+            </span>
         </div>
         <div class="body" id="outputTree"></div>
     </div>

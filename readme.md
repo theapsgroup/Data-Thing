@@ -10,6 +10,17 @@ General purpose json fiddle tool. I found myself writing many small nodejs scrip
 3. Use the "magic" variable `input` and return a new output. Most simple script is `return input`
 4. Save the result.
 
+Working with text or xml
+-------------
+
+By setting the input mode to text, the input is interpreted as an array of strings, which can be used by JavaScript transformation scripts.
+
+By setting the input mode to xml, the input is interpreted as jsonml, which is a JSON serialization of xml. This can be used by JavaScript or XSL transformation scripts.
+
+By setting the output mode to text, the output MUST be an array of strings.
+
+By setting the output mode to xml, the output MUST be valid jsonml, which is automatically produced by a correct xsl transformation
+
 Example
 ---------
 

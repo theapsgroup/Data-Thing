@@ -1,4 +1,4 @@
-var inputMode, outputMode;
+var inputMode, scriptMode, outputMode;
 var modes = {
     "json": {
         editorMode: "ace/mode/javascript",
@@ -21,8 +21,46 @@ var modes = {
         serialize: function(arr) {
             return (arr||[]).join('\n');
         }
+    },
+    "xml-jsonml": {
+        editorMode: "ace/mode/xml",
+        mime: "application/xml;charset=utf-8",
+        extension: ".xml",
+        parse: function (str) {
+            return JsonML.fromXMLText(str);
+        },
+        serialize: function(jsonml) {
+            return formatXml(JsonML.toXMLText(jsonml));
+        }
     }
 };
+
+var scriptModes = {
+    "js": {
+        editorMode: "ace/mode/javascript",
+        mime: "text/js;charset=utf-8",
+        extension: ".js",
+        transform: function(script,input) {
+            var fn = new Function('input',script);
+            return fn(input);
+        }
+    },
+    "xsl": {
+        editorMode: "ace/mode/xml",
+        mime: "application/xml;charset=utf-8",
+        extension: ".xsl",
+        transform: function(script,input) {
+            //input is jsonml, create xml document
+            var inputDoc = Saxon.parseXML(JsonML.toXMLText(input));
+            var xslDoc = Saxon.parseXML(script);
+            var proc = Saxon.newXSLT20Processor(xslDoc);
+            var outputDoc = proc.transformToDocument(inputDoc);
+            //return jsonml again
+            var output = JsonML.fromXMLText(Saxon.serializeXML(outputDoc));
+            return output;
+        }
+    }
+}
 
 /**
  * goal with modes
@@ -62,13 +100,8 @@ function createEditor(el,readonly) {
     editor.setTheme("ace/theme/monokai");
     editor.setReadOnly(readonly||false);
     editor.getSession().setMode("ace/mode/javascript");
-    // editor.getSession().setMode("ace/mode/xml");
     editor.$blockScrolling = Infinity;
     return editor
-}
-
-function focus() {
-    // document.getElementById('script').focus();
 }
 
 
@@ -82,6 +115,11 @@ function setEditorMode(editor,mode) {
 function setInputMode(_mode) {
     inputMode = modes[_mode];
     setEditorMode(inputEditor,inputMode);
+}
+
+function setScriptMode(_mode) {
+    scriptMode = scriptModes[_mode];
+    setEditorMode(scriptEditor,scriptMode);
 }
 
 function setOutputMode(_mode) {
@@ -184,6 +222,37 @@ var throttle = (function() {
     return throttle;
 }());
 
+//from https://gist.github.com/sente/1083506
+function formatXml(xml) {
+    var formatted = '';
+    var reg = /(>)(<)(\/*)/g;
+    xml = xml.replace(reg, '$1\r\n$2$3');
+    var pad = 0;
+    xml.split('\r\n').forEach(function(node, index) {
+        var indent = 0;
+        if (node.match( /.+<\/\w[^>]*>$/ )) {
+            indent = 0;
+        } else if (node.match( /^<\/\w/ )) {
+            if (pad != 0) {
+                pad -= 1;
+            }
+        } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) {
+            indent = 1;
+        } else {
+            indent = 0;
+        }
+
+        var padding = '';
+        for (var i = 0; i < pad; i++) {
+            padding += '  ';
+        }
+
+        formatted += padding + node + '\r\n';
+        pad += indent;
+    });
+
+    return formatted;
+}
 
 /************* loaders *************/
 
@@ -241,8 +310,8 @@ function saveScriptStorage(str) {
 function saveScriptDownload(str) {
     writeDownload(
         document.getElementById('rawScript'),
-        'text/js;charset=utf-8',
-        'script.js'
+        scriptMode.mime,
+        'script'+scriptMode.extension
     )(str);
 }
 //saveOutputFile
@@ -293,6 +362,7 @@ var handleScriptFileChange = createFileInputChangeHandler(function(f) {
 //handler for mode change dropdown
 function handleModeChange() {
     setInputMode(document.getElementById('inputMode').value);
+    setScriptMode(document.getElementById('scriptMode').value);
     setOutputMode(document.getElementById('outputMode').value);
     handleChange();
 }
@@ -302,16 +372,13 @@ function handleEditorChange() {
     handleChange();
 }
 
-function transformJS(script,input) {
+function transform(script,input) {
     try {
-        var fn = new Function('input',script);
-        return fn(input);
+        return scriptMode.transform(script,input);
     } catch(e) {
         handleError(e.message);
         return e.message;
     }
-}
-
 }
 
 //TODO: more error handling
@@ -326,7 +393,7 @@ function handleChange() {
     saveScriptStorage(script);
     saveScriptDownload(script);
     //execute function
-    var outputJSON = transformJS(script,inputJSON);
+    var outputJSON = transform(script,inputJSON);
     //convert output to text, using mode serializer
     var output = outputMode.serialize(outputJSON);
     //write output
@@ -347,6 +414,7 @@ makeDroppable(document.getElementById('scriptBox'),function(file) {
 });
 
 document.getElementById('inputMode').addEventListener('change', handleModeChange, false);
+document.getElementById('scriptMode').addEventListener('change', handleModeChange, false);
 document.getElementById('outputMode').addEventListener('change', handleModeChange, false);
 document.getElementById('inputFile').addEventListener('change', handleInputFileChange, false);
 document.getElementById('scriptFile').addEventListener('change', handleScriptFileChange, false);

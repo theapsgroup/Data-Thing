@@ -7,8 +7,11 @@
     <script src="components/ace/src-min/ace.js"></script>
     <script src="components/ace/src-min/mode-javascript.js"></script>
     <script src="components/ace/src-min/mode-plain_text.js"></script>
+    <script src="components/ace/src-min/mode-xml.js"></script>
     <script src="components/ace/src-min/theme-monokai.js"></script>
+    <script src="components/saxon/Saxonce.nocache.js"></script>
     <script src="js/TreeLib.js"></script>
+    <script src="js/jsonml-xml.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -24,6 +27,7 @@
                 <select name="" id="inputMode">
                     <option value="json">JSON</option>
                     <option value="text">Text</option>
+                    <option value="xml-jsonml">XML (JsonML)</option>
                 </select>
             </span>
         </div>
@@ -34,9 +38,16 @@
             <input type="file" id="scriptFile" style="display:none">
             <i class="pull-left fa fa-folder-open-o" onclick="document.getElementById('scriptFile').click();"></i>
             <span class="err" id="error"></span>
-            <a class="pull-right" id="rawScript" download="script.js" href="" target="raw">
-                <i class="fa fa-floppy-o"></i>
-            </a>
+            <span class="pull-right">
+                <label for="scriptMode">Mode:</label>
+                <select name="" id="scriptMode">
+                    <option value="js">JS</option>
+                    <option value="xsl">XSL</option>
+                </select>
+                <a id="rawScript" download="script.js" href="" target="raw">
+                    <i class="fa fa-floppy-o"></i>
+                </a>
+            </span>
         </div>
         <div class="body" id="scriptBox">return input;</div>
     </div>
@@ -47,6 +58,7 @@
                 <select name="" id="outputMode">
                     <option value="json">JSON</option>
                     <option value="text">Text</option>
+                    <option value="xml-jsonml">XML (JsonML)</option>
                 </select>
                 <a id="rawOutput" download="raw.json" href="" target="raw">
                     <i class="fa fa-floppy-o"></i>

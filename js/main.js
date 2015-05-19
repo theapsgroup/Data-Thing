@@ -3,6 +3,7 @@ var modes = {
     "json": {
         editorMode: "ace/mode/javascript",
         mime: "application/json;charset=utf-8",
+        extension: ".json",
         parse: function(str) {
             return JSON.parse(str);
         },
@@ -13,6 +14,7 @@ var modes = {
     "text": {
         editorMode: "ace/mode/plain_text",
         mime: "text/plain;charset=utf-8",
+        extension: ".txt",
         parse: function(str) {
             return str.split(/\r\n|\r|\n/g);
         },
@@ -59,8 +61,8 @@ function createEditor(el,readonly) {
     var editor = ace.edit(el);
     editor.setTheme("ace/theme/monokai");
     editor.setReadOnly(readonly||false);
-    // editor.getSession().setMode("ace/mode/javascript");
-    editor.getSession().setMode("ace/mode/xml");
+    editor.getSession().setMode("ace/mode/javascript");
+    // editor.getSession().setMode("ace/mode/xml");
     editor.$blockScrolling = Infinity;
     return editor
 }
@@ -107,6 +109,19 @@ function readStorage(key) {
 function writeStorage(key) {
     return function(value) {
         localStorage[key] = value;
+    }
+}
+
+function writeDownload(element,mime,filename) {
+    return function(value) {
+        var dataurl = [
+            'data:',
+            mime,
+            ',',
+            encodeURI(value)
+        ].join('');
+        element.href = dataurl;
+        element.download = filename;
     }
 }
 
@@ -223,10 +238,34 @@ function saveInputStorage(str) {
 function saveScriptStorage(str) {
     writeStorage('script')(str);
 }
+function saveScriptDownload(str) {
+    writeDownload(
+        document.getElementById('rawScript'),
+        'text/js;charset=utf-8',
+        'script.js'
+    )(str);
+}
 //saveOutputFile
 //saveOutputStorage
+function saveOutputDownload(str) {
+    writeDownload(
+        document.getElementById('rawOutput'),
+        outputMode.mime,
+        'raw'+outputMode.extension
+    )(str);
+}
 
 /************* change handlers ***************/
+
+function handleError(msg) {
+    var err = document.getElementById('error');
+    err.innerHTML = 'error in script: '+msg;
+    err.classList.add('visible');
+}
+
+function clearError() {
+    var err = document.getElementById('error').classList.remove('visible');
+}
 
 //generic file input change handler
 function createFileInputChangeHandler(handler) {
@@ -258,39 +297,26 @@ function handleModeChange() {
     handleChange();
 }
 
-//editor change handlers
-function handleInputChange() {
+//editor change handler
+function handleEditorChange() {
     handleChange();
-    // Q.when(inputEditor.getValue())
-    //     .then(function(str) {
-    //         localStorage.inputJSON = str;
-    //         return str;
-    //     })
-    //     .then(parseJSON())
-    //     .then(function(json) {
-    //         input = json;
-    //         return json;
-    //     })
-    //     .then(process)
-
-    // console.log('change');
-    // showInput(inputEditor.getValue());
-}
-
-function handleScriptChange() {
-    handleChange();
-    // process();
 }
 
 function transformJS(script,input) {
-    var fn = new Function('input',script);
-    return fn(input);
+    try {
+        var fn = new Function('input',script);
+        return fn(input);
+    } catch(e) {
+        handleError(e.message);
+        return e.message;
+    }
 }
 
 }
 
-//TODO: error handling
+//TODO: more error handling
 function handleChange() {
+    clearError();
     //convert input to json, using mode parser
     var input = inputEditor.getValue();
     saveInputStorage(input);
@@ -298,12 +324,14 @@ function handleChange() {
     //convert script to function
     var script = scriptEditor.getValue();
     saveScriptStorage(script);
+    saveScriptDownload(script);
     //execute function
     var outputJSON = transformJS(script,inputJSON);
     //convert output to text, using mode serializer
     var output = outputMode.serialize(outputJSON);
     //write output
     loadOutput(output);
+    saveOutputDownload(output);
 }
 
 /*********** setup *************/
@@ -318,91 +346,13 @@ makeDroppable(document.getElementById('scriptBox'),function(file) {
         .done();
 });
 
-
-// function showInput(str) {
-//     return Q.when(str)
-//         .then(parseJSON())
-//         .then(function(json) {
-//             input = json;
-//             return json;
-//         })
-//         .then(renderJSON(inputEditor))
-//         .then(process)
-//         .then(focus);
-// }
-
-// function parseJSON() {
-//     return function(str) {
-//         return JSON.parse(str);
-//     }
-// }
-
-// function render(editor) {
-//     return function(text) {
-//         editor.setValue(text);
-//         editor.clearSelection();
-//         return text;
-//     }
-// }
-
-// function renderJSON(editor) {
-//     return function(json) {
-//         var src = (JSON.stringify(json,null,2)||'undefined');
-//         editor.setValue(src);
-//         editor.clearSelection();
-//         return json;
-//     }
-// }
-
-// function process() {
-//     var err = document.getElementById('error');
-//     err.classList.remove('visible');
-//     return Q.when(function() {
-//         var script = scriptEditor.getValue();
-//         localStorage.inputScript = script;
-//         var dataurl = [
-//             'data:',
-//             'text/js;charset=utf-8,',
-//             encodeURI(script)
-//         ].join('');
-//         document.getElementById('rawScript').href = dataurl;
-//         return new Function('input',script);
-//     }).then(function(factory) {
-//         return factory();
-//     }).fail(function(e) {
-//         err.innerHTML = 'error in script: '+e.message;
-//         err.classList.add('visible');
-//         return function(input){return e.message;}
-//     }).then(function(fn) {
-//         return fn(input);
-//     }).fail(function(e) {
-//         err.innerHTML = 'error executing script: '+e.message;
-//         err.classList.add('visible');
-//         return e.message;
-//     }).then(function(json) {
-//         var dataurl = [
-//             'data:',
-//             'application/json;charset=utf-8,',
-//             JSON.stringify(json)
-//         ].join('');
-//         document.getElementById('rawOutput').href = dataurl;
-//         return json;
-//     }).then(renderJSON(outputEditor))
-//     .fail(function(err) {
-//         console.log(err.message);
-//         return input;
-//     });
-// }
-
-
-
 document.getElementById('inputMode').addEventListener('change', handleModeChange, false);
 document.getElementById('outputMode').addEventListener('change', handleModeChange, false);
 document.getElementById('inputFile').addEventListener('change', handleInputFileChange, false);
 document.getElementById('scriptFile').addEventListener('change', handleScriptFileChange, false);
 
-inputEditor.on('change',throttle(handleInputChange));
-scriptEditor.on('change',throttle(handleScriptChange));
+inputEditor.on('change',throttle(handleEditorChange));
+scriptEditor.on('change',throttle(handleEditorChange));
 
 setInputMode('json');
 setOutputMode('json');
@@ -414,11 +364,3 @@ if (localStorage.input) {
 if (localStorage.script) {
     loadScriptStorage();
 }
-
-// if (localStorage.inputScript) {
-//     scriptEditor.setValue(localStorage.inputScript);
-//     scriptEditor.clearSelection();
-// }
-// if (localStorage.inputJSON) {
-//     showInput(localStorage.inputJSON);
-// }

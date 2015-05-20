@@ -20,6 +20,9 @@ h1 {
 p {
     margin: 0;
 }
+select {
+    vertical-align: middle;
+}
 
 .pull-right: {
   float: right;
@@ -60,9 +63,11 @@ p {
   font-size: 24px;
   border: 1px solid #333;
   line-height: 24px;
-
-
 }
+.box .head label {
+    font-size: 16px;
+}
+
 .err {
     display: none;
     color: crimson;

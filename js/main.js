@@ -114,16 +114,19 @@ function setEditorMode(editor,mode) {
 
 function setInputMode(_mode) {
     inputMode = modes[_mode];
+    document.getElementById('inputMode').value = _mode;
     setEditorMode(inputEditor,inputMode);
 }
 
 function setScriptMode(_mode) {
     scriptMode = scriptModes[_mode];
+    document.getElementById('scriptMode').value = _mode;
     setEditorMode(scriptEditor,scriptMode);
 }
 
 function setOutputMode(_mode) {
     outputMode = modes[_mode];
+    document.getElementById('outputMode').value = _mode;
     setEditorMode(outputEditor,outputMode);
 }
 
@@ -270,11 +273,9 @@ function loadOutput(str) {
 }
 
 //savers
-
 function saveInputStorage(str) {
     writeStorage('input')(str);
 }
-//saveScriptFile
 //saveScriptStorage
 function saveScriptStorage(str) {
     writeStorage('script')(str);
@@ -286,8 +287,6 @@ function saveScriptDownload(str) {
         'script'+scriptMode.extension
     )(str);
 }
-//saveOutputFile
-//saveOutputStorage
 function saveOutputDownload(str) {
     writeDownload(
         document.getElementById('rawOutput'),
@@ -421,10 +420,12 @@ window.onload = function() {
                 if (data.files['script.js']) {
                     loadScript(data.files['script.js'].content);
                     setScriptMode('js');
+                    setOutputMode('json');
                 }
                 if (data.files['script.xsl']) {
                     loadScript(data.files['script.xsl'].content);
                     setScriptMode('xsl');
+                    setOutputMode('xml');
                 }
             });
         }

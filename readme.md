@@ -21,6 +21,24 @@ By setting the output mode to text, the output MUST be an array of strings.
 
 By setting the output mode to xml, the output MUST be valid jsonml, which is automatically produced by a correct xsl transformation
 
+Linking gists
+-----------
+
+By creating a gist with at least one of the following files:
+
+- input.js
+- input.txt
+- input.xml
+- script.js
+- script.xsl
+
+And calling the Data Thing with a gist id, you can use the stored scripts.
+
+Examples:
+
+- <http://theapsgroup.github.io/Data-Thing/?9ac1897316509d397d15>
+- <http://theapsgroup.github.io/Data-Thing/?afb53e880965541454d7>
+
 Example
 ---------
 

@@ -22,7 +22,7 @@ var modes = {
             return (arr||[]).join('\n');
         }
     },
-    "xml-jsonml": {
+    "xml": {
         editorMode: "ace/mode/xml",
         mime: "application/xml;charset=utf-8",
         extension: ".xml",
@@ -424,11 +424,45 @@ scriptEditor.on('change',throttle(handleEditorChange));
 
 setInputMode('json');
 setOutputMode('json');
+setScriptMode('js');
 
-//load from storage if available
-if (localStorage.input) {
-    loadInputStorage();
-}
-if (localStorage.script) {
-    loadScriptStorage();
+window.onload = function() {
+    if (location.search) {
+        // fetching a gist
+        var id = location.search.split('?')[1];
+        if (id) {
+            fetch('https://api.github.com/gists/'+id).then(function(resp) {
+                return resp.json();
+            }).then(function(data) {
+                if (data.files['input.json']) {
+                    loadInput(data.files['input.json'].content);
+                    setInputMode('json');
+                }
+                if (data.files['input.txt']) {
+                    loadInput(data.files['input.txt'].content);
+                    setInputMode('txt');
+                }
+                if (data.files['input.xml']) {
+                    loadInput(data.files['input.xml'].content);
+                    setInputMode('xml');
+                }
+                if (data.files['script.js']) {
+                    loadScript(data.files['script.js'].content);
+                    setScriptMode('js');
+                }
+                if (data.files['script.xsl']) {
+                    loadScript(data.files['script.xsl'].content);
+                    setScriptMode('xsl');
+                }
+            });
+        }
+    } else {
+        //load from storage if available
+        if (localStorage.input) {
+            loadInputStorage();
+        }
+        if (localStorage.script) {
+            loadScriptStorage();
+        }
+    }
 }

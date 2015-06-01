@@ -44,9 +44,32 @@ Example
 
 Suppose you have the following JSON (randomly generated data): <http://beta.json-generator.com/PSKfAr_>
 
-To simply return the email of the first record, type
+### Getting specific data
+
+Return the email adress of the zeroth record
 
     return input[0].email;
+
+### Filtering
+
+Return only records with blue eyes:
+
+    return input.filter(function(r) {
+        return r.eyeColor==='blue';
+    })
+
+### Mapping (creating a new / modified record for every record)
+
+Return only eye color and name:
+
+    return input.map(function(r) {
+        return {
+            eyeColor: r.eyeColor,
+            name: r.name
+        }
+    });
+
+### A combination of functions:
 
 To get the names of blue-eyed records:
 

@@ -12,24 +12,24 @@ function values(obj) {
     var inputMode, scriptMode, outputMode;
     function assertNonEmptyArray(arr,msg) {
         if (!(arr && arr instanceof Array)) {
-            throw(new Error(msg||'please return an array'));
+            throw(new Error(msg||'please provide an array'));
         }
         if (!arr.length) {
-            throw(new Error(msg||'empty array returned'));
+            throw(new Error(msg||'empty array provided'));
         }
     }
 
     function assertArrayOfStrings(arr,msg) {
         assertNonEmptyArray(arr);
         if (typeof arr[0] !== 'string') {
-            throw(new Error(msg||'please return an array of strings'));
+            throw(new Error(msg||'please provide an array of strings'));
         }
     }
 
     function assertArrayOfObjects(arr,msg) {
         assertNonEmptyArray(arr);
         if (typeof arr[0] !== 'object') {
-            throw(new Error(msg||'please return an array of objects'));
+            throw(new Error(msg||'please provide an array of objects'));
         }
     }
 

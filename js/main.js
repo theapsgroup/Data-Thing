@@ -9,6 +9,29 @@ function values(obj) {
     });
 }
 
+function assertNonEmptyArray(arr) {
+    if (!(arr && arr instanceof Array)) {
+        throw(new Error('please return an array'));
+    }
+    if (!arr.length) {
+        throw(new Error('empty array returned'));
+    }
+}
+
+function assertArrayOfStrings(arr) {
+    assertNonEmptyArray(arr);
+    if (typeof arr[0] !== 'string') {
+        throw(new Error('please return an array of strings'));
+    }
+}
+
+function assertArrayOfObjects(arr) {
+    assertNonEmptyArray(arr);
+    if (typeof arr[0] !== 'object') {
+        throw(new Error('please return an array of objects'));
+    }
+}
+
 var modes = {
     "json": {
         editorMode: "ace/mode/javascript",
@@ -29,15 +52,7 @@ var modes = {
             return str.split(/\r\n|\r|\n/g);
         },
         serialize: function(arr) {
-            if (!(arr && arr instanceof Array)) {
-                return 'please return an array of strings';
-            }
-            if (!arr.length) {
-                return 'empty array returned';
-            }
-            if (typeof arr[0] !== 'string') {
-                return 'please return an array of strings';
-            }
+            assertArrayOfStrings(arr);
             return (arr||[]).join('\n');
         }
     },
@@ -64,23 +79,9 @@ var modes = {
             });
         },
         serialize: function(arr) {
-            if (!(arr && arr instanceof Array)) {
-                return 'please return an array of arrays or objects';
-            }
-            if (!arr.length) {
-                return 'empty array returned';
-            }
-            if (typeof arr[0] !== 'object') {
-                return 'please return an array of arrays or objects';
-            }
+            assertArrayOfObjects(arr);
             return (arr||[]).map(function(cells) {
-                if (cells instanceof Array) {
-                    //array
-                    return cells.join('\t');
-                } else {
-                    //object
-                    return values(cells).join('\t');
-                }
+                return values(cells).join('\t');
             }).join('\n');
         }
     },
@@ -101,15 +102,7 @@ var modes = {
             });
         },
         serialize: function(arr) {
-            if (!(arr && arr instanceof Array)) {
-                return 'please return an array of objects';
-            }
-            if (!arr.length) {
-                return 'empty array returned';
-            }
-            if (typeof arr[0] !== 'object') {
-                return 'please return an array of objects';
-            }
+            assertArrayOfObjects(arr);
             var header = Object.keys(arr[0]).join('\t');
             var lines = arr.map(function(obj) {
                 return values(obj).join('\t');
@@ -133,15 +126,7 @@ var modes = {
         mime: "text/plain;charset=utf-8",
         extension: ".sql",
         serialize: function(arr) {
-            if (!(arr && arr instanceof Array)) {
-                return 'please return an array of objects';
-            }
-            if (!arr.length) {
-                return 'empty array returned';
-            }
-            if (typeof arr[0] !== 'object') {
-                return 'please return an array of objects';
-            }
+            assertArrayOfObjects(arr);
             return arr.map(function(obj) {
                 var cols = keys(obj);
                 var vals = values(obj);
@@ -160,15 +145,7 @@ var modes = {
         mime: "text/plain;charset=utf-8",
         extension: ".sql",
         serialize: function(arr) {
-            if (!(arr && arr instanceof Array)) {
-                return 'please return an array of objects';
-            }
-            if (!arr.length) {
-                return 'empty array returned';
-            }
-            if (typeof arr[0] !== 'object') {
-                return 'please return an array of objects';
-            }
+            assertArrayOfObjects(arr);
         }
     }
 };
@@ -482,12 +459,7 @@ function handleEditorChange() {
 }
 
 function transform(script,input) {
-    try {
-        return scriptMode.transform(script,input);
-    } catch(e) {
-        handleError(e.message);
-        return e.message;
-    }
+    return scriptMode.transform(script,input);
 }
 
 //TODO: more error handling
@@ -501,10 +473,15 @@ function handleChange() {
     var script = scriptEditor.getValue();
     saveScriptStorage(script);
     saveScriptDownload(script);
-    //execute function
-    var outputJSON = transform(script,inputJSON);
-    //convert output to text, using mode serializer
-    var output = outputMode.serialize(outputJSON);
+    try {
+        //execute function
+        var outputJSON = transform(script,inputJSON);
+        //convert output to text, using mode serializer
+        var output = outputMode.serialize(outputJSON);
+    } catch(e) {
+        handleError(e.message);
+        var output = 'Error: '+e.message;
+    }
     //write output
     loadOutput(output);
     saveOutputDownload(output);

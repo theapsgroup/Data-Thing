@@ -32,6 +32,77 @@ var modes = {
         serialize: function(jsonml) {
             return formatXml(JsonML.toXMLText(jsonml));
         }
+    },
+    "tsv": {
+        editorMode: "ace/mode/plain_text",
+        mime: "text/plain;charset=utf-8",
+        extension: ".tsv",
+        parse: function(str) {
+            //array of arrays
+            var lines = str.split(/\r\n|\r|\n/g);
+            return lines.map(function(line) {
+                return line.split(/\t/g);
+            });
+        },
+        serialize: function(arr) {
+            if (!(arr && arr instanceof Array)) {
+                return 'please return an array of arrays or objects';
+            }
+            if (!arr.length) {
+                return 'empty array returned';
+            }
+            if (typeof arr[0] !== 'object') {
+                console.log(arr[0]);
+                return 'please return an array of arrays or objects';
+            }
+            return (arr||[]).map(function(cells) {
+                if (cells instanceof Array) {
+                    //array
+                    return cells.join('\t');
+                } else {
+                    //object
+                    return Object.keys(cells).map(function(key) {
+                        return cells[key];
+                    }).join('\t');
+                }
+            }).join('\n');
+        }
+    },
+    "tsvh": {
+        editorMode: "ace/mode/plain_text",
+        mime: "text/plain;charset=utf-8",
+        extension: ".tsv",
+        parse: function(str) {
+            //array of objects
+            var lines = str.split(/\r\n|\r|\n/g);
+            var headers = lines.shift().split(/\t/g);
+            return lines.map(function(line) {
+                var cells = line.split(/\t/g);
+                return cells.reduce(function(obj,cell,index) {
+                    obj[headers[index]] = cell;
+                    return obj;
+                },{});
+            });
+        },
+        serialize: function(arr) {
+            if (!(arr && arr instanceof Array)) {
+                return 'please return an array of objects';
+            }
+            if (!arr.length) {
+                return 'empty array returned';
+            }
+            if (typeof arr[0] !== 'object') {
+                return 'please return an array of objects';
+            }
+            var header = Object.keys(arr[0]).join('\t');
+            var lines = arr.map(function(obj) {
+                return Object.keys(obj).map(function(key) {
+                    return obj[key];
+                }).join('\t');;
+            });
+            return [header].concat(lines).join('\n');
+
+        }
     }
 };
 

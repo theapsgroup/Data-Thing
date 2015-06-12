@@ -10,28 +10,85 @@ function values(obj) {
 
 (function() {
     var inputMode, scriptMode, outputMode;
-    function assertNonEmptyArray(arr) {
+    function assertNonEmptyArray(arr,msg) {
         if (!(arr && arr instanceof Array)) {
-            throw(new Error('please return an array'));
+            throw(new Error(msg||'please return an array'));
         }
         if (!arr.length) {
-            throw(new Error('empty array returned'));
+            throw(new Error(msg||'empty array returned'));
         }
     }
 
-    function assertArrayOfStrings(arr) {
+    function assertArrayOfStrings(arr,msg) {
         assertNonEmptyArray(arr);
         if (typeof arr[0] !== 'string') {
-            throw(new Error('please return an array of strings'));
+            throw(new Error(msg||'please return an array of strings'));
         }
     }
 
-    function assertArrayOfObjects(arr) {
+    function assertArrayOfObjects(arr,msg) {
         assertNonEmptyArray(arr);
         if (typeof arr[0] !== 'object') {
-            throw(new Error('please return an array of objects'));
+            throw(new Error(msg||'please return an array of objects'));
         }
     }
+
+    function assertNotEmpty(str,msg) {
+        if (!str) {
+            throw(new Error(msg||'Argument should not be empty'));
+        }
+    }
+
+    //tsv generator
+    window.makeTSV = function(arr) {
+        assertArrayOfObjects(arr);
+        var header = Object.keys(arr[0]).join('\t');
+        var lines = arr.map(function(obj) {
+            return values(obj).join('\t');
+        });
+        return [header].concat(lines);
+    };
+    //sql INSERT generator
+    window.makeSQLInsert = function(arr,tableName) {
+        assertArrayOfObjects(arr);
+        assertNotEmpty(tableName,'Table name should be given like: makeSQLInsert(input,\'users\');')
+        return arr.map(function(obj) {
+            var cols = keys(obj);
+            var vals = values(obj);
+            return [
+                'INSERT INTO ',
+                tableName,
+                ' (',
+                cols.join(','),
+                ') VALUES (',
+                vals.join(','),
+                ');'
+            ].join('');
+        });
+    };
+    //sql UPDATE generator
+    window.makeSQLUpdate = function(arr,tableName,key) {
+        assertArrayOfObjects(arr);
+        assertNotEmpty(tableName,'Table name should be given like: makeSQLUpdate(input,\'users\',\'id\');');
+        assertNotEmpty(key,'Key field should be given like: makeSQLUpdate(input,\'users\',\'id\');');
+        return arr.map(function(obj) {
+            var cols = keys(obj);
+            var vals = values(obj);
+            return [
+                'UPDATE ',
+                tableName,
+                ' SET ',
+                cols.map(function(col,i) {
+                    return col+'='+vals[i];
+                }).join(','),
+                ' WHERE ',
+                key,
+                '=',
+                obj[key],
+                ';'
+            ].join('');
+        });
+    };
 
     var modes = {
         "json": {
@@ -78,12 +135,6 @@ function values(obj) {
                 return lines.map(function(line) {
                     return line.split(/\t/g);
                 });
-            },
-            serialize: function(arr) {
-                assertArrayOfObjects(arr);
-                return (arr||[]).map(function(cells) {
-                    return values(cells).join('\t');
-                }).join('\n');
             }
         },
         "tsvh": {
@@ -101,52 +152,6 @@ function values(obj) {
                         return obj;
                     },{});
                 });
-            },
-            serialize: function(arr) {
-                assertArrayOfObjects(arr);
-                var header = Object.keys(arr[0]).join('\t');
-                var lines = arr.map(function(obj) {
-                    return values(obj).join('\t');
-                });
-                return [header].concat(lines).join('\n');
-
-            }
-        },
-        //TODO: we may add a helper in the transformation script to create
-        //the correct data structure for sql
-        //
-        //something like:
-        //    makeSQLInsert(data,'table_name')
-        //    makeSQLUpdate(data,'table_name')
-        //    makeTSV(data)
-        //
-        // which would output text (array of strings)
-        // this would reduce the number of output modes and enhance flexibility
-        "sqli": {
-            editorMode: "ace/mode/plain_text",
-            mime: "text/plain;charset=utf-8",
-            extension: ".sql",
-            serialize: function(arr) {
-                assertArrayOfObjects(arr);
-                return arr.map(function(obj) {
-                    var cols = keys(obj);
-                    var vals = values(obj);
-                    return [
-                        'INSERT INTO table_name (',
-                        cols.join(','),
-                        ') VALUES (',
-                        vals.join(','),
-                        ');'
-                    ].join('');
-                }).join('\n');
-            }
-        },
-        "sqlu": {
-            editorMode: "ace/mode/plain_text",
-            mime: "text/plain;charset=utf-8",
-            extension: ".sql",
-            serialize: function(arr) {
-                assertArrayOfObjects(arr);
             }
         }
     };

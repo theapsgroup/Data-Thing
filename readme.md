@@ -10,6 +10,17 @@ General purpose json fiddle tool. I found myself writing many small nodejs scrip
 3. Use the "magic" variable `input` and return a new output. Most simple script is `return input`
 4. Save the result.
 
+General way of working
+------------
+
+This thing needs a bit of getting used to. Some guidelines:
+
+- match the input mode to what you are working with
+- set modes to xml and xsl when working with those
+- set output mode to 'JSON' first when working with js transformations
+- make sure you output what you want, taking errors into account
+- switch mode to text or tsv when you have a data structure that supports it (see next)
+
 Working with text or xml
 -------------
 

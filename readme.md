@@ -17,9 +17,13 @@ By setting the input mode to text, the input is interpreted as an array of strin
 
 By setting the input mode to xml, the input is interpreted as jsonml, which is a JSON serialization of xml. This can be used by JavaScript or XSL transformation scripts.
 
+By setting the input mode to tsv, the input is interpreted as tab separated values (with or without header). You'll get this when you paste from excel. This can be used by JavaScript transformation scripts.
+
 By setting the output mode to text, the output MUST be an array of strings.
 
 By setting the output mode to xml, the output MUST be valid jsonml, which is automatically produced by a correct xsl transformation
+
+By setting the output mode to tsv, the output MUST be an array of objects or arrays when the 'no header' option is chosen.
 
 Linking gists
 -----------
@@ -29,6 +33,7 @@ By creating a gist with at least one of the following files:
 - input.js
 - input.txt
 - input.xml
+- input.tsv
 - script.js
 - script.xsl
 

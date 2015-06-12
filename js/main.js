@@ -488,6 +488,10 @@ window.onload = function() {
                     loadInput(data.files['input.xml'].content);
                     setInputMode('xml');
                 }
+                if (data.files['input.tsv']) {
+                    loadInput(data.files['input.tsv'].content);
+                    setInputMode('tsvh');
+                }
                 if (data.files['script.js']) {
                     loadScript(data.files['script.js'].content);
                     setScriptMode('js');

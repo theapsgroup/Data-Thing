@@ -1,4 +1,14 @@
 var inputMode, scriptMode, outputMode;
+
+function keys(obj) {
+    return Object.keys(obj);
+}
+function values(obj) {
+    return keys(obj).map(function(key) {
+        return obj[key];
+    });
+}
+
 var modes = {
     "json": {
         editorMode: "ace/mode/javascript",
@@ -69,9 +79,7 @@ var modes = {
                     return cells.join('\t');
                 } else {
                     //object
-                    return Object.keys(cells).map(function(key) {
-                        return cells[key];
-                    }).join('\t');
+                    return values(cells).join('\t');
                 }
             }).join('\n');
         }
@@ -104,12 +112,63 @@ var modes = {
             }
             var header = Object.keys(arr[0]).join('\t');
             var lines = arr.map(function(obj) {
-                return Object.keys(obj).map(function(key) {
-                    return obj[key];
-                }).join('\t');;
+                return values(obj).join('\t');
             });
             return [header].concat(lines).join('\n');
 
+        }
+    },
+    //TODO: we may add a helper in the transformation script to create
+    //the correct data structure for sql
+    //
+    //something like:
+    //    makeSQLInsert(data,'table_name')
+    //    makeSQLUpdate(data,'table_name')
+    //    makeTSV(data)
+    //
+    // which would output text (array of strings)
+    // this would reduce the number of output modes and enhance flexibility
+    "sqli": {
+        editorMode: "ace/mode/plain_text",
+        mime: "text/plain;charset=utf-8",
+        extension: ".sql",
+        serialize: function(arr) {
+            if (!(arr && arr instanceof Array)) {
+                return 'please return an array of objects';
+            }
+            if (!arr.length) {
+                return 'empty array returned';
+            }
+            if (typeof arr[0] !== 'object') {
+                return 'please return an array of objects';
+            }
+            return arr.map(function(obj) {
+                var cols = keys(obj);
+                var vals = values(obj);
+                return [
+                    'INSERT INTO table_name (',
+                    cols.join(','),
+                    ') VALUES (',
+                    vals.join(','),
+                    ');'
+                ].join('');
+            }).join('\n');
+        }
+    },
+    "sqlu": {
+        editorMode: "ace/mode/plain_text",
+        mime: "text/plain;charset=utf-8",
+        extension: ".sql",
+        serialize: function(arr) {
+            if (!(arr && arr instanceof Array)) {
+                return 'please return an array of objects';
+            }
+            if (!arr.length) {
+                return 'empty array returned';
+            }
+            if (typeof arr[0] !== 'object') {
+                return 'please return an array of objects';
+            }
         }
     }
 };

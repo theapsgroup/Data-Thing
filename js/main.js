@@ -19,6 +19,15 @@ var modes = {
             return str.split(/\r\n|\r|\n/g);
         },
         serialize: function(arr) {
+            if (!(arr && arr instanceof Array)) {
+                return 'please return an array of strings';
+            }
+            if (!arr.length) {
+                return 'empty array returned';
+            }
+            if (typeof arr[0] !== 'string') {
+                return 'please return an array of strings';
+            }
             return (arr||[]).join('\n');
         }
     },
@@ -52,7 +61,6 @@ var modes = {
                 return 'empty array returned';
             }
             if (typeof arr[0] !== 'object') {
-                console.log(arr[0]);
                 return 'please return an array of arrays or objects';
             }
             return (arr||[]).map(function(cells) {

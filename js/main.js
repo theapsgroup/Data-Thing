@@ -53,11 +53,12 @@ function values(obj) {
         assertArrayOfObjects(arr);
         assertNotEmpty(tableName,'Table name should be given like: makeSQLInsert(input,\'users\');')
         return arr.map(function(obj) {
-            var cols = keys(obj);
-            var vals = values(obj);
+            var cols = keys(obj).map(SqlEscape.ident);
+            var vals = values(obj).map(SqlEscape.literal);
+            var name = SqlEscape.ident(tableName);
             return [
                 'INSERT INTO ',
-                tableName,
+                name,
                 ' (',
                 cols.join(','),
                 ') VALUES (',
@@ -72,19 +73,20 @@ function values(obj) {
         assertNotEmpty(tableName,'Table name should be given like: makeSQLUpdate(input,\'users\',\'id\');');
         assertNotEmpty(key,'Key field should be given like: makeSQLUpdate(input,\'users\',\'id\');');
         return arr.map(function(obj) {
-            var cols = keys(obj);
-            var vals = values(obj);
+            var cols = keys(obj).map(SqlEscape.ident);
+            var vals = values(obj).map(SqlEscape.literal);
+            var name = SqlEscape.ident(tableName);
             return [
                 'UPDATE ',
-                tableName,
+                name,
                 ' SET ',
                 cols.map(function(col,i) {
                     return col+'='+vals[i];
                 }).join(','),
                 ' WHERE ',
-                key,
+                SqlEscape.ident(key),
                 '=',
-                obj[key],
+                SqlEscape.literal(obj[key]),
                 ';'
             ].join('');
         });

@@ -534,7 +534,7 @@ function values(obj) {
                     }
                     if (data.files['input.txt']) {
                         loadInput(data.files['input.txt'].content);
-                        setInputMode('txt');
+                        setInputMode('text');
                     }
                     if (data.files['input.xml']) {
                         loadInput(data.files['input.xml'].content);

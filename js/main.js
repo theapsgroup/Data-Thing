@@ -513,12 +513,44 @@ function values(obj) {
     document.getElementById('inputFile').addEventListener('change', handleInputFileChange, false);
     document.getElementById('scriptFile').addEventListener('change', handleScriptFileChange, false);
 
+    document.getElementById('saveGist').addEventListener('click',saveGist, false);
+
     inputEditor.on('change',throttle(handleEditorChange));
     scriptEditor.on('change',throttle(handleEditorChange));
 
     setInputMode('json');
     setOutputMode('json');
     setScriptMode('js');
+
+    //saving an anonymous gist
+    function saveGist() {
+        var url = 'https://api.github.com/gists';
+        var data = {
+            "description": "The APS Group data-thing",
+            "public": false,
+            "files": {}
+        }
+        data.files['input'+inputMode.extension] = {
+            content: inputEditor.getValue()
+        };
+        data.files['script'+scriptMode.extension] = {
+            content: scriptEditor.getValue()
+        };
+
+        //post data
+        fetch(url,{
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(function(resp) {
+            return resp.json();
+        }).then(function(data) {
+            window.location.hash = data.id;
+        });
+    }
 
     window.onload = function() {
         if (location.hash) {

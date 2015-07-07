@@ -69,6 +69,10 @@ Examples:
 - <http://theapsgroup.github.io/Data-Thing/#9ac1897316509d397d15>
 - <http://theapsgroup.github.io/Data-Thing/#afb53e880965541454d7>
 
+Saving gists
+----------
+
+By clicking the "save as gist" button, an anonymous gist with the input and script files will be created. Note that this gist is secret, but public nonetheless. Anyone with access to the url can view your data. Also, is [cannot be easily deleted](https://help.github.com/articles/deleting-an-anonymous-gist/)
 
 Example
 ---------

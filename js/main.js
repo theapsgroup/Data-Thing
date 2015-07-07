@@ -521,9 +521,9 @@ function values(obj) {
     setScriptMode('js');
 
     window.onload = function() {
-        if (location.search) {
+        if (location.hash) {
             // fetching a gist
-            var id = location.search.split('?')[1];
+            var id = location.hash.split('#')[1];
             if (id) {
                 fetch('https://api.github.com/gists/'+id).then(function(resp) {
                     return resp.json();

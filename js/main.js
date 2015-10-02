@@ -484,7 +484,12 @@ function values(obj) {
         //convert input to json, using mode parser
         var input = inputEditor.getValue();
         saveInputStorage(input);
-        var inputJSON = inputMode.parse(input);
+        try {
+            var inputJSON = inputMode.parse(input);
+        } catch(e) {
+            handleError(e.message);
+            var inputJSON = e.message;
+        }
         //convert script to function
         var script = scriptEditor.getValue();
         saveScriptStorage(script);

@@ -577,6 +577,10 @@ function values(obj) {
                         loadInput(data.files['input.json'].content);
                         setInputMode('json');
                     }
+                    if (data.files['input.yml']) {
+                        loadInput(data.files['input.yml'].content);
+                        setInputMode('yaml');
+                    }
                     if (data.files['input.txt']) {
                         loadInput(data.files['input.txt'].content);
                         setInputMode('text');

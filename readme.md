@@ -66,8 +66,9 @@ And calling the Data Thing with a gist id, you can use the stored scripts.
 
 Examples:
 
-- <http://theapsgroup.github.io/Data-Thing/#9ac1897316509d397d15>
-- <http://theapsgroup.github.io/Data-Thing/#afb53e880965541454d7>
+- JSON: <http://theapsgroup.github.io/Data-Thing/#9ac1897316509d397d15>
+- XML + XSL: <http://theapsgroup.github.io/Data-Thing/#afb53e880965541454d7>
+- YAML: <http://theapsgroup.github.io/Data-Thing/#68e5961db3901ba161bf>
 
 Saving gists
 ----------

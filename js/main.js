@@ -104,6 +104,14 @@ function values(obj) {
                 return (JSON.stringify(json,null,2)||'undefined');
             }
         },
+        "yaml": {
+            editorMode: "ace/mode/yaml",
+            mime: "application/x-yaml;charset=utf-8",
+            extension: ".yml",
+            parse: function(str) {
+                return jsyaml.load(str);
+            }
+        },
         "text": {
             editorMode: "ace/mode/plain_text",
             mime: "text/plain;charset=utf-8",

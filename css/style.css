@@ -76,9 +76,14 @@ a {
     color: crimson;
     font-size: 12px;
     float: left;
+    max-width: calc(100% - 180px);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 27px;
 }
 .err.visible {
-    display: inline;
+    display: inline-block;
 }
 
 .ace_gutter {

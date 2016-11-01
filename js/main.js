@@ -111,6 +111,9 @@ function values(obj) {
             extension: ".yml",
             parse: function(str) {
                 return jsyaml.load(str);
+            },
+            serialize: function(data) {
+                return jsyaml.safeDump(data);
             }
         },
         "text": {

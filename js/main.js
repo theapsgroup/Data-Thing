@@ -170,6 +170,14 @@ function values(obj) {
             serialize: function(arr) {
                 return makeTSV(arr).join('\n');
             }
+        },
+        "nquads": {
+            editorMode: "ace/mode/plain_text",
+            mime: "text/plain;charset=utf-8",
+            extension: ".txt",
+            serialize: function(data) {
+                return jsonld.promises.toRDF(data, {format: 'application/nquads'});
+            }
         }
     };
 
@@ -488,31 +496,27 @@ function values(obj) {
     //TODO: more error handling
     function handleChange() {
         clearError();
-        //convert input to json, using mode parser
-        var input = inputEditor.getValue();
-        saveInputStorage(input);
-        try {
-            var inputJSON = inputMode.parse(input);
-        } catch(e) {
-            handleError(e.message);
-            var inputJSON = e.message;
-        }
+
         //convert script to function
         var script = scriptEditor.getValue();
         saveScriptStorage(script);
         saveScriptDownload(script);
-        try {
-            //execute function
-            var outputJSON = transform(script,inputJSON);
-            //convert output to text, using mode serializer
-            var output = outputMode.serialize(outputJSON);
-        } catch(e) {
-            handleError(e.message);
-            var output = 'Error: '+e.message;
-        }
-        //write output
-        loadOutput(output);
-        saveOutputDownload(output);
+
+        //allow the parser, transform and the serializer to return a promise
+        Promise.resolve(inputEditor.getValue()).then(function(input) {
+            saveInputStorage(input);
+            return inputMode.parse(input)
+        }).then(function(inputJSON) {
+            return transform(script, inputJSON)
+        }).then(function(data) {
+            return outputMode.serialize(data);
+        }).catch(function(err) {
+            handleError(err.message);
+            return 'Error: '+err.message;
+        }).then(function(data) {
+            loadOutput(data);
+            saveOutputDownload(data);
+        });
     }
 
     /*********** setup *************/

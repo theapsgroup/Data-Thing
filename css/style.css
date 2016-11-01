@@ -21,7 +21,13 @@ p {
     margin: 0;
 }
 select {
-    vertical-align: middle;
+    background-color: #2F3129;
+    color: whitesmoke;
+    border: 1px solid #444;
+    font-family: verdana, sans-serif;
+    font-size: 16px;
+    vertical-align: baseline;
+    padding: 5px;
 }
 a {
     text-decoration: none;

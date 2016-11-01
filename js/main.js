@@ -40,14 +40,15 @@ function values(obj) {
     }
 
     //tsv generator
-    window.makeTSV = function(arr) {
+    function makeTSV(arr) {
         assertArrayOfObjects(arr);
         var header = Object.keys(arr[0]).join('\t');
         var lines = arr.map(function(obj) {
             return values(obj).join('\t');
         });
         return [header].concat(lines);
-    };
+    }
+
     //sql INSERT generator
     window.makeSQLInsert = function(arr,tableName) {
         assertArrayOfObjects(arr);
@@ -162,6 +163,9 @@ function values(obj) {
                         return obj;
                     },{});
                 });
+            },
+            serialize: function(arr) {
+                return makeTSV(arr).join('\n');
             }
         }
     };

@@ -34,12 +34,13 @@ By setting the output mode to text, the output MUST be an array of strings.
 
 By setting the output mode to xml, the output MUST be valid jsonml, which is automatically produced by a correct xsl transformation
 
-Output TSV or SQL
+By setting the output mode to TSV, the output MIST be an array of objects.
+
+Output SQL
 -----------
 
 The following helper functions are available to output various text based file formats:
 
-- makeTSV(arr);
 - makeSQLInsert(arr,tableName);
 - makeSQLUpdate(arr,tableName,key);
 

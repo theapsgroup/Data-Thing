@@ -175,6 +175,9 @@ function values(obj) {
             editorMode: "ace/mode/plain_text",
             mime: "text/plain;charset=utf-8",
             extension: ".txt",
+            parse: function(data) {
+                return jsonld.promises.fromRDF(data, {format: 'application/nquads'});
+            },
             serialize: function(data) {
                 return jsonld.promises.toRDF(data, {format: 'application/nquads'});
             }

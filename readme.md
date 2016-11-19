@@ -36,6 +36,16 @@ By setting the output mode to xml, the output MUST be valid jsonml, which is aut
 
 By setting the output mode to TSV, the output MIST be an array of objects.
 
+Working with HTML
+--------
+
+Getting structured data out of HTML is easy using [scrapio](https://github.com/rikkertkoppes/scrapio). Scrapio provides an easy way to extract some json structure from HTML, using a template:
+
+    scrapio.load(input).tmpl({
+        title: scrapio('h1').text(),
+        content: scrapio('section').text()
+    });
+
 Output SQL
 -----------
 

@@ -139,6 +139,14 @@ function values(obj) {
                 return formatXml(JsonML.toXMLText(jsonml));
             }
         },
+        "html": {
+            editorMode: "ace/mode/html",
+            mime: "text/html;charset=utf-8",
+            extension: ".html",
+            parse: function (str) {
+                return str;
+            }
+        },
         "tsv": {
             editorMode: "ace/mode/plain_text",
             mime: "text/plain;charset=utf-8",

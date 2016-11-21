@@ -81,6 +81,7 @@ Examples:
 - XML + XSL: <http://theapsgroup.github.io/Data-Thing/#afb53e880965541454d7>
 - YAML: <http://theapsgroup.github.io/Data-Thing/#68e5961db3901ba161bf>
 - HTML + [srapio](https://github.com/rikkertkoppes/scrapio): <http://theapsgroup.github.io/Data-Thing/#2442a8f7a5873244feec9b3df331aa3d>
+- JSON-LD: <http://theapsgroup.github.io/Data-Thing/#9848b7ef1f48cc77a445f1cf58868a20> (try NQuads as output method)
 
 Saving gists
 ----------

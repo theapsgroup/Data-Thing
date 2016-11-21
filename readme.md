@@ -80,6 +80,7 @@ Examples:
 - JSON: <http://theapsgroup.github.io/Data-Thing/#9ac1897316509d397d15>
 - XML + XSL: <http://theapsgroup.github.io/Data-Thing/#afb53e880965541454d7>
 - YAML: <http://theapsgroup.github.io/Data-Thing/#68e5961db3901ba161bf>
+- HTML + [srapio](https://github.com/rikkertkoppes/scrapio): <http://theapsgroup.github.io/Data-Thing/#2442a8f7a5873244feec9b3df331aa3d>
 
 Saving gists
 ----------

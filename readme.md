@@ -34,7 +34,7 @@ By setting the output mode to text, the output MUST be an array of strings.
 
 By setting the output mode to xml, the output MUST be valid jsonml, which is automatically produced by a correct xsl transformation
 
-By setting the output mode to TSV, the output MIST be an array of objects.
+By setting the output mode to TSV, the output MUST be an array of objects.
 
 Working with HTML
 --------
@@ -86,7 +86,7 @@ Examples:
 Saving gists
 ----------
 
-By clicking the "save as gist" button, an anonymous gist with the input and script files will be created. Note that this gist is secret, but public nonetheless. Anyone with access to the url can view your data. Also, is [cannot be easily deleted](https://help.github.com/articles/deleting-an-anonymous-gist/)
+By clicking the "save as gist" button, an anonymous gist with the input and script files will be created. Note that this gist is secret, but public nonetheless. Anyone with access to the url can view your data. Also, it [cannot be easily deleted](https://help.github.com/articles/deleting-an-anonymous-gist/)
 
 Example
 ---------

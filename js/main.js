@@ -611,6 +611,10 @@ function values(obj) {
                         loadInput(data.files['input.xml'].content);
                         setInputMode('xml');
                     }
+                    if (data.files['input.html']) {
+                        loadInput(data.files['input.html'].content);
+                        setInputMode('html');
+                    }
                     if (data.files['input.tsv']) {
                         loadInput(data.files['input.tsv'].content);
                         setInputMode('tsvh');

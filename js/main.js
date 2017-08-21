@@ -216,6 +216,35 @@ function values(obj) {
                 var output = JsonML.fromXMLText(Saxon.serializeXML(outputDoc));
                 return output;
             }
+        },
+        "xquery": {
+            editorMode: "ace/mode/xquery",
+            mime: "application/xquery;charset=utf-8",
+            extension: ".xq",
+            transform: function(script,input) {
+                //hack xqib to not alert errors, but throw them
+                //by proxying the parent window alert method
+                for (i = 0; i< frames.length; i++) {
+                    if (frames[i].$wnd) {
+                        frames[i].$wnd = new Proxy(window, {
+                            get: function(obj, prop) {
+                                if (prop === 'alert') {
+                                    return (str) => {
+                                        throw new Error(str);
+                                    }
+                                }
+                                return obj[prop]
+                            }
+                        })
+                    }
+                }
+                //input is jsonml, create xml document
+                var inputXML = JsonML.toXMLText(input);
+                var script = `let $input := ${inputXML}\n${script}`;
+                var outputXML = xqib.executeNewScript(script);
+                var output = JsonML.fromXMLText(outputXML);
+                return output;
+            }
         }
     }
 
@@ -627,6 +656,11 @@ function values(obj) {
                     if (data.files['script.xsl']) {
                         loadScript(data.files['script.xsl'].content);
                         setScriptMode('xsl');
+                        setOutputMode('xml');
+                    }
+                    if (data.files['script.xq']) {
+                        loadScript(data.files['script.xq'].content);
+                        setScriptMode('xquery');
                         setOutputMode('xml');
                     }
                 });

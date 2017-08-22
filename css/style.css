@@ -82,7 +82,7 @@ a {
     color: crimson;
     font-size: 12px;
     float: left;
-    max-width: calc(100% - 180px);
+    max-width: calc(100% - 210px);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

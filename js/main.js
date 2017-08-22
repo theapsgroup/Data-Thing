@@ -240,7 +240,7 @@ function values(obj) {
                 }
                 //input is jsonml, create xml document
                 var inputXML = JsonML.toXMLText(input);
-                var script = `let $input := ${inputXML}\n${script}`;
+                var script = `declare variable $input := ${inputXML};\n${script}`;
                 var outputXML = xqib.executeNewScript(script);
                 var output = JsonML.fromXMLText(outputXML);
                 return output;

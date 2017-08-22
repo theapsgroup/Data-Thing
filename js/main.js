@@ -226,28 +226,45 @@ function values(obj) {
             mime: "application/xquery;charset=utf-8",
             extension: ".xq",
             transform: function(script,input) {
-                //hack xqib to not alert errors, but throw them
-                //by proxying the parent window alert method
-                for (i = 0; i< frames.length; i++) {
-                    if (frames[i].$wnd) {
-                        frames[i].$wnd = new Proxy(window, {
-                            get: function(obj, prop) {
-                                if (prop === 'alert') {
-                                    return (str) => {
-                                        throw new Error(str);
+                function transformXML() {
+                    //hack xqib to not alert errors, but throw them
+                    //by proxying the parent window alert method
+                    for (i = 0; i< frames.length; i++) {
+                        if (frames[i].$wnd) {
+                            frames[i].$wnd = new Proxy(window, {
+                                get: function(obj, prop) {
+                                    if (prop === 'alert') {
+                                        return (str) => {
+                                            throw new Error(str);
+                                        }
                                     }
+                                    return obj[prop]
                                 }
-                                return obj[prop]
-                            }
-                        })
+                            })
+                        }
                     }
+                    //input is jsonml, create xml document
+                    var inputXML = JsonML.toXMLText(input);
+                    var xqscript = `declare variable $input := ${inputXML};\n${script}`;
+                    var outputXML = `<output>${xqib.executeNewScript(xqscript)}</output>`;
+                    var output = JsonML.fromXMLText(outputXML).slice(1);
+                    return output;
                 }
-                //input is jsonml, create xml document
-                var inputXML = JsonML.toXMLText(input);
-                var script = `declare variable $input := ${inputXML};\n${script}`;
-                var outputXML = `<output>${xqib.executeNewScript(script)}</output>`;
-                var output = JsonML.fromXMLText(outputXML).slice(1);
-                return output;
+
+                function checkForXQIB(fn) {
+                    if (typeof xqib == 'undefined') {
+                        return setTimeout(function() {
+                            checkForXQIB(fn)
+                        }, 10);
+                    }
+                    fn();
+                }
+
+                return new Promise(function(resolve, reject) {
+                    checkForXQIB(function() {
+                        resolve(transformXML());
+                    })
+                });
             }
         }
     }

@@ -136,6 +136,10 @@ function values(obj) {
                 return JsonML.fromXMLText(str);
             },
             serialize: function(jsonml) {
+                if (jsonml[0] instanceof Array) {
+                    //allow multiple nodes to be returned
+                    return formatXml(jsonml.map(JsonML.toXMLText).join('\n'));
+                }
                 return formatXml(JsonML.toXMLText(jsonml));
             }
         },
@@ -241,8 +245,8 @@ function values(obj) {
                 //input is jsonml, create xml document
                 var inputXML = JsonML.toXMLText(input);
                 var script = `declare variable $input := ${inputXML};\n${script}`;
-                var outputXML = xqib.executeNewScript(script);
-                var output = JsonML.fromXMLText(outputXML);
+                var outputXML = `<output>${xqib.executeNewScript(script)}</output>`;
+                var output = JsonML.fromXMLText(outputXML).slice(1);
                 return output;
             }
         }

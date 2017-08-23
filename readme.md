@@ -80,7 +80,7 @@ Examples:
 
 - JSON: <http://theapsgroup.github.io/Data-Thing/#9ac1897316509d397d15>
 - XML + XSL: <http://theapsgroup.github.io/Data-Thing/#afb53e880965541454d7>
-- XML + XQuery: <http://theapsgroup.github.io/Data-Thing/#34bcc24d6dcf8039791d819044b0fc25>
+- XML + XQuery: <http://theapsgroup.github.io/Data-Thing/#7db6cc513ceab177ebe8b6e196a29378>
 - YAML: <http://theapsgroup.github.io/Data-Thing/#68e5961db3901ba161bf>
 - HTML + [srapio](https://github.com/rikkertkoppes/scrapio): <http://theapsgroup.github.io/Data-Thing/#2442a8f7a5873244feec9b3df331aa3d>
 - JSON-LD: <http://theapsgroup.github.io/Data-Thing/#9848b7ef1f48cc77a445f1cf58868a20> (try NQuads as output method)

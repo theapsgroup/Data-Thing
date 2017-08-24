@@ -136,6 +136,10 @@ function values(obj) {
                 return JsonML.fromXMLText(str);
             },
             serialize: function(jsonml) {
+                if (jsonml[0] instanceof Array) {
+                    //allow multiple nodes to be returned
+                    return formatXml(jsonml.map(JsonML.toXMLText).join('\n'));
+                }
                 return formatXml(JsonML.toXMLText(jsonml));
             }
         },
@@ -215,6 +219,52 @@ function values(obj) {
                 //return jsonml again
                 var output = JsonML.fromXMLText(Saxon.serializeXML(outputDoc));
                 return output;
+            }
+        },
+        "xquery": {
+            editorMode: "ace/mode/xquery",
+            mime: "application/xquery;charset=utf-8",
+            extension: ".xq",
+            transform: function(script,input) {
+                function transformXML() {
+                    //hack xqib to not alert errors, but throw them
+                    //by proxying the parent window alert method
+                    for (i = 0; i< frames.length; i++) {
+                        if (frames[i].$wnd) {
+                            frames[i].$wnd = new Proxy(window, {
+                                get: function(obj, prop) {
+                                    if (prop === 'alert') {
+                                        return (str) => {
+                                            throw new Error(str);
+                                        }
+                                    }
+                                    return obj[prop]
+                                }
+                            })
+                        }
+                    }
+                    //input is jsonml, create xml document
+                    var inputXML = JsonML.toXMLText(input);
+                    var xqscript = `declare variable $input := ${inputXML};\n${script}`;
+                    var outputXML = `<output>${xqib.executeNewScript(xqscript)}</output>`;
+                    var output = JsonML.fromXMLText(outputXML).slice(1);
+                    return output;
+                }
+
+                function checkForXQIB(fn) {
+                    if (typeof xqib == 'undefined') {
+                        return setTimeout(function() {
+                            checkForXQIB(fn)
+                        }, 10);
+                    }
+                    fn();
+                }
+
+                return new Promise(function(resolve, reject) {
+                    checkForXQIB(function() {
+                        resolve(transformXML());
+                    })
+                });
             }
         }
     }
@@ -627,6 +677,11 @@ function values(obj) {
                     if (data.files['script.xsl']) {
                         loadScript(data.files['script.xsl'].content);
                         setScriptMode('xsl');
+                        setOutputMode('xml');
+                    }
+                    if (data.files['script.xq']) {
+                        loadScript(data.files['script.xq'].content);
+                        setScriptMode('xquery');
                         setOutputMode('xml');
                     }
                 });

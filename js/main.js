@@ -266,6 +266,15 @@ function values(obj) {
                     })
                 });
             }
+        },
+        "jsonata": {
+            editorMode: "ace/mode/text",
+            mime: "text/plain;charset=utf-8",
+            extension: ".jsonata",
+            transform: function(script, input) {
+                var expression = jsonata(script);
+                return expression.evaluate(input);
+            }
         }
     }
 

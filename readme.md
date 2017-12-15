@@ -36,6 +36,13 @@ By setting the output mode to xml, the output MUST be valid jsonml, which is aut
 
 By setting the output mode to TSV, the output MUST be an array of objects.
 
+Working with JSON
+--------
+
+You can do pretty much anything you want using javascript, but there is also a [JSONata](http://jsonata.org/) mode in which you can write very consice, xpath like expressions to query and modify your data.
+
+See the [JSONata Docs](http://docs.jsonata.org) for instructions on the usage of JSONata.
+
 Working with HTML
 --------
 
